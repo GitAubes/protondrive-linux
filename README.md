@@ -148,6 +148,18 @@ To restart the service manually:
 systemctl --user restart rclone-proton.mount.service
 ```
 
+If `~/ProtonDrive` is present but inaccessible (for example: `Transport endpoint is not connected`), clear stale FUSE mounts then restart:
+
+```bash
+systemctl --user stop rclone-proton.mount.service
+fusermount3 -u ~/ProtonDrive || fusermount -u ~/ProtonDrive || sudo umount -l ~/ProtonDrive
+systemctl --user start rclone-proton.mount.service
+```
+
+If logs contain `directory already mounted`, the commands above usually fix it.
+
+If logs contain HTTP `422` upload errors for one file, this is usually a remote upload conflict (an unfinished draft already exists on Proton Drive). Resolve by renaming/re-uploading that file, or waiting for Proton to clear the pending draft.
+
 ---
 
 ## 📚 References
